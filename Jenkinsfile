@@ -1,9 +1,28 @@
 pipeline {
-    agent { docker { image 'maven:3.8.4-openjdk-11-slim' } }
+    agent any
+
     stages {
-        stage('build') {
+        stage('Build') {
             steps {
-                sh 'mvn --version'
+                sh 'rm -rf build'
+                sh 'mkdir build'
+                sh 'touch build/car.txt'
+                sh 'echo "nati" > build/car.txt'
+                sh 'echo "malkiel" >> build/car.txt'
+                sh 'echo "devops" >> build/car.txt'
+            }
+        }
+        stage('Test'){
+            steps {
+                sh 'test -f build/car.txt'
+                sh 'grep "nati" build/car.txt'
+                sh 'grep "malkiel" build/car.txt'
+                sh 'grep "devops" build/car.txt'
+            }
+        }
+        stage('Publish'){
+            steps{
+                archiveArtifacts artifacts: 'build/'
             }
         }
     }
